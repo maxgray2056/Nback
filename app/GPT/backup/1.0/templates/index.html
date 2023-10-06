@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>N-Back Game</title>
+    <style>
+        /* Add your CSS styles here */
+    </style>
+</head>
+<body>
+    <h1>N-Back Game</h1>
+    <h2>Score: <span id="score">0</span></h2>
+    <h2>Incorrects: <span id="incorrects">0</span></h2>
+    <h2>Timer: <span id="timer">15:00</span></h2>
+    <div id="letter-container"></div>
+    <div>
+        <button id="yes-button" onclick="checkMatch('yes')">Yes</button>
+        <button id="no-button" onclick="checkMatch('no')">No</button>
+        <button id="pause-button" onclick="pause()">Pause</button>
+        <button id="resume-button" onclick="resume()">Resume</button>
+    </div>
+
+    <script>
+        // Add your JavaScript code here
+        let game;
+        let score = 0;
+        let incorrects = 0;
+        let timer;
+        let remainingTime = 900; // 15 minutes
+        let N = 2;
+        let refresh = false;
+        let isPause = 0;
+
+
+
+        function startGame(){
+            game = setInterval(getNextLetter, 2000); // Change letter every 2 seconds
+        }
+
+        function startTimer() {
+            timer = setInterval(decrementTime, 1000);
+        }
+
+        function decrementTime() {
+            remainingTime--;
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer').textContent = formattedTime;
+
+            if (remainingTime <= 0 || letterCount >= 200) {
+                clearInterval(timer);
+                endGame();
+            }
+        }
+
+
+        
+        let isFirstClick = true; // Add a flag to track the first click
+
+        function checkMatch(clickedLetter) {
+            const letterContainer = document.getElementById('letter-container');
+            const currentLetter = letterContainer.textContent.trim();
+            const prevLetter = prevLetters[prevLetters.length - N - 1];
+
+            if (isFirstClick) {
+                isFirstClick = false; // Set the flag to false after the first click
+
+                if (currentLetter && prevLetter === currentLetter && clickedLetter === 'yes') {
+                    score++;
+                } else if (currentLetter && prevLetter !== currentLetter && clickedLetter === 'no') {
+                    score++;
+                } else {
+                    incorrects++;
+                }
+
+                document.getElementById('score').textContent = score;
+                document.getElementById('incorrects').textContent = incorrects;
+
+                letterContainer.style.pointerEvents = 'none'; // Disable further clicks
+
+
+                // setTimeout(() => {
+                //     letterContainer.style.pointerEvents = 'auto'; // Re-enable clicks after a delay
+                //     // getNextLetter();
+                //     isFirstClick = true; // Set the flag to true for the next letter
+                // }, 1000);
+            }
+        }
+
+
+        function pause() {
+            clearInterval(timer);
+            clearInterval(game);
+            document.getElementById('pause-button').style.display = 'none';
+            document.getElementById('resume-button').style.display = 'block';
+            document.getElementById('letter-container').style.pointerEvents = 'none'; // Disable letter container clicks
+            isPause = ture;
+        }
+
+
+        function resume() {
+            startTimer();
+            startGame();
+            document.getElementById('pause-button').style.display = 'block';
+            document.getElementById('resume-button').style.display = 'none';
+            document.getElementById('letter-container').style.pointerEvents = 'auto'; // Enable letter container clicks
+            isPause = false;
+        }
+
+
+        function endGame() {
+            // Perform end game actions here
+        }
+
+        function displayLetter(letter) {
+            const letterContainer = document.getElementById('letter-container');
+            letterContainer.textContent = letter;
+            letterCount++;
+        }
+
+        function getNextLetter() {
+            fetch('/get_letter')
+            .then(response => response.json())
+            .then(data => {
+                    const letterContainer = document.getElementById('letter-container');
+                    letterContainer.textContent = data.letter;
+                    // letterContainer.textContent = isPause;
+
+                    letterCount++;
+            });
+        
+        isFirstClick = true; // Set the flag to true for the next letter
+        }
+
+
+
+
+        // Initialize game
+        let prevLetters = [];
+        let letterCount = 0;
+
+
+        getNextLetter();
+        startTimer();
+        startGame();
+
+
+
+    </script>
+</body>
+</html>

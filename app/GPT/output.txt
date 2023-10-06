@@ -1,0 +1,130 @@
+Time: 2023-05-30 09:47:55.809997
+Test ID: 1
+Total Score: 10
+Total Incorrects: 0
+Total Letters: 10
+Correctness: 100.00%
+Total Time Cost: 0:23 seconds
+
+
+
+Time: 2023-05-30 09:48:46.890633
+Test ID: 0
+Total Score: 0
+Total Incorrects: 0
+Total Letters: 12
+Correctness: 0.00%
+Total Time Cost: 0:23 seconds
+
+
+
+Time: 2023-05-30 09:49:14.474168
+Test ID: 1
+Total Score: 7
+Total Incorrects: 3
+Total Letters: 22
+Correctness: 70.00%
+Total Time Cost: 0:23 seconds
+
+
+
+Time: 2023-05-31 21:47:13.814362
+Test ID: 0
+Total Score: 0
+Total Incorrects: 0
+Total Letters: 354
+Correctness: 0.00%
+Total Time Cost: 17:19 seconds
+
+
+
+Time: 2023-05-31 22:07:42.416168
+Test ID: 0
+Total Score: 0
+Total Incorrects: 0
+Total Letters: 254
+Correctness: 0.00%
+Total Time Cost: 15:25 seconds
+
+
+
+Time: 2023-06-01 17:37:28.952708
+Test ID: 0
+Total Score: 4
+Total Incorrects: 6
+Total Letters: 10
+Correctness: 40.00%
+Total Time Cost: 0:23 seconds
+
+
+
+Time: 2023-06-01 17:38:35.449651
+Test ID: 0
+Total Score: 1
+Total Incorrects: 9
+Total Letters: 10
+Correctness: 10.00%
+Total Time Cost: 0:23 seconds
+
+
+
+Time: 2023-06-01 17:43:26.979863
+Test ID: 0
+Total Score: 2
+Total Incorrects: 7
+Total Letters: 10
+Correctness: 22.22%
+Total Time Cost: 0:23 
+
+
+
+Time: 2023-06-01 17:56:53.649983
+Test ID: 0
+Total Score: 23
+Total Incorrects: 3
+Total Letters: 27
+Correctness: 88.46%
+Total Time Cost: 0:58 
+
+
+
+Time: 2023-06-01 17:57:32.144828
+Test ID: 1
+Total Score: 16
+Total Incorrects: 0
+Total Letters: 16
+Correctness: 100.00%
+Total Time Cost: 0:35 
+
+
+
+Time: 2023-06-01 18:09:29.555905
+Test ID: 0
+Total Score: 19
+Total Incorrects: 29
+Total Letters: 52
+Correctness: 39.58%
+Total Time Cost: 2:50 
+
+
+
+Time: 2023-06-01 18:52:11.781362
+Test ID: 1
+Total Score: 172
+Total Incorrects: 27
+Total Letters: 197
+Correctness: 86.43%
+Total Time Cost: 15:10 
+
+
+
+Time: 2023-06-01 19:14:16.511782
+Test ID: 2
+Total Score: 211
+Total Incorrects: 40
+Total Letters: 250
+Correctness: 84.06%
+Total Time Cost: 15:9 
+
+
+

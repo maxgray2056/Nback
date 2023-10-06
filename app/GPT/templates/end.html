@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>N-Back Game - Home</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        h1 {
+            font-size: 80px;
+        }
+
+        h2 {
+            font-size: 40px;
+        }
+
+        button {
+            font-size: 48px;
+            margin-top: 20px;
+        }
+
+        #start-button {
+            width: 400px;
+            height: 160px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Test Finished</h1>
+    <h2>Total Time Cost: {{ minutes }}:{{ seconds }}  </h2>
+    <h2>Total Score: {{ score }}</h2>
+    <h2>Total Incorrects: {{ incorrects }}</h2>
+    <h2>Correctness: {{ correctness }}%</h2>
+
+    <button onclick="backHome()">Back to Home</button>
+    <!-- <button onclick="startGame()">Start Again</button> -->
+
+    <script>
+        function backHome() {
+            // Redirect to the game page
+            window.location.href = "/";
+        }
+
+        function startGame() {
+            // Redirect to the game page
+            window.location.href = "/nback";
+        }
+    </script>
+</body>
+</html>

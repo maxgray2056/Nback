@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>N-Back Test</title>
+    <style>
+        body {
+            background-color: black;
+            color: white;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden;
+        }
+    
+        h1 {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 40px;
+        }
+
+        .debug-group{
+            font-size: 40px;
+            color: black;
+        }
+    
+        #letter-container {
+            font-size: 400px;
+        }
+    
+        .button-group {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .button-group button {
+            font-size: 64px;
+            margin-top: 20px;
+            margin-right: 20px;
+        }
+    
+        .button-group #yes-button,
+        .button-group #no-button {
+            width: 360px;
+            height: 160px;
+        }
+    
+        .button-group .hidden {
+            display: none;
+        }
+    
+        .button-group #home-button {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            font-size: 64px;
+            /* color: white; */
+            /* text-decoration: none; */
+        }
+
+        .button-group #end-button {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            font-size: 64px;
+            /* color: white; */
+            /* text-decoration: none; */
+        }
+    
+        #pause-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 999;
+        }
+    
+        #pause-overlay h1 {
+            font-size: 96px;
+            color: white;
+            margin-bottom: 20px;
+        }
+    
+        #pause-overlay .button-group {
+            margin-top: 20px;
+        }
+/*     
+        @media only screen and (max-width: 600px) {
+            h1 {
+                font-size: 32px;
+            }
+    
+            #letter-container {
+                font-size: 120px;
+            }
+    
+            .button-group button {
+                font-size: 24px;
+                margin-top: 10px;
+                margin-right: 5px;
+            }
+    
+            .button-group #yes-button,
+            .button-group #no-button {
+                width: 120px;
+                height: 60px;
+            }
+    
+            .button-group #home-button {
+                font-size: 16px;
+            }
+    
+            #pause-overlay h1 {
+                font-size: 36px;
+                margin-bottom: 10px;
+            }
+    
+            #pause-overlay .button-group {
+                margin-top: 10px;
+            }
+        } */
+    </style>
+    
+</head>
+<body>
+    <h1>N-Back Game</h1>
+    <h2>Timer: <span id="timer">15:00</span></h2>
+    <h2>Score: <span id="score">0</span></h2>
+    <h2>Incorrects: <span id="incorrects">0</span></h2>
+
+    <div id="letter-container"></div>
+
+    <div id="pause-overlay">
+        <h1>Paused</h1>
+        <div class="button-group">
+            <button id="resume-button" onclick="resume()">Resume</button>
+        </div>
+    </div>
+    
+
+    <div class="button-group">
+        <button id="yes-button" onclick="checkMatch('yes')">Yes</button>
+        <button id="no-button" onclick="checkMatch('no')">No</button>
+    </div>
+
+    <div class="button-group">
+        <button id="pause-button" onclick="pause()">Pause</button>
+        <button id="resume-button" onclick="resume()" class="hidden">Resume</button>
+    </div>
+
+    <div class="button-group">
+        <button id="home-button" onclick="home()">Home</button>
+        <button id="end-button" onclick="endGame()">End Game</button>
+    </div>
+
+    <h2 class="debug-group">Debug: <span id="debug">0</span></h2>
+
+
+    <script>
+        // Add your JavaScript code here
+        let game;
+        let score = 0;
+        let incorrects = 0;
+        let timer;
+        let remainingTime = 900; // 15 minutes
+        let N = 2;
+        let refresh = false;
+        let isPause = 0;
+        let startletter = 0;
+        let nback;
+        let totalLetter = 300;
+
+        function startGame(){
+            game = setInterval(getNextLetter, 2000); // Change letter every 2 seconds
+        }
+
+        function startTimer() {
+            timer = setInterval(decrementTime, 1000);
+        }
+
+        function decrementTime() {
+            remainingTime--;
+            const minutes = Math.floor(remainingTime / 60);
+            const seconds = remainingTime % 60;
+            const formattedTime = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer').textContent = formattedTime;
+
+            if (remainingTime <= 0 || letterCount >= totalLetter) {
+                clearInterval(timer);
+                endGame();
+            }
+        }
+
+
+        
+        let isFirstClick = true; // Add a flag to track the first click
+
+        function checkMatch(clickedLetter) {
+            const letterContainer = document.getElementById('letter-container');
+            const currentLetter = letterContainer.textContent.trim();
+            const prevLetter = prevLetters[prevLetters.length - N - 1];
+
+            if (isFirstClick) {
+                isFirstClick = false; // Set the flag to false after the first click
+
+                if (nback === 1 && clickedLetter === 'yes') {
+                    score++;
+                } else if (nback===0 && clickedLetter === 'no') {
+                    score++;
+                    
+                } else {
+                    incorrects++;
+                }
+
+                document.getElementById('score').textContent = score;
+                document.getElementById('incorrects').textContent = incorrects;
+
+                letterContainer.style.pointerEvents = 'none'; // Disable further clicks
+
+
+                // setTimeout(() => {
+                //     letterContainer.style.pointerEvents = 'auto'; // Re-enable clicks after a delay
+                //     // getNextLetter();
+                //     isFirstClick = true; // Set the flag to true for the next letter
+                // }, 1000);
+            }
+
+            sendScoreAndIncorrectsToServer(score, incorrects, letterCount); 
+
+        }
+
+
+        function pause() {
+            // clearInterval(timer);
+            clearInterval(game);
+            document.getElementById('pause-button').classList.add('hidden');
+            document.getElementById('resume-button').classList.remove('hidden');
+            document.getElementById('letter-container').style.pointerEvents = 'none';
+            document.getElementById('pause-overlay').style.display = 'flex'; // Show the overlay
+
+            isPaused = true;
+        }
+
+        function resume() {
+            // startTimer();
+            startGame();
+            document.getElementById('pause-button').classList.remove('hidden');
+            document.getElementById('resume-button').classList.add('hidden');
+            document.getElementById('letter-container').style.pointerEvents = 'auto';
+            document.getElementById('pause-overlay').style.display = 'none'; // Hide the overlay
+
+            isPaused = false;
+        }
+
+
+        // function pause() {
+        //     clearInterval(timer);
+        //     clearInterval(game);
+        //     document.getElementById('pause-button').style.display = 'none';
+        //     document.getElementById('resume-button').style.display = 'block';
+        //     document.getElementById('letter-container').style.pointerEvents = 'none'; // Disable letter container clicks
+        //     isPause = ture;
+        // }
+
+
+        // function resume() {
+        //     startTimer();
+        //     startGame();
+        //     document.getElementById('pause-button').style.display = 'block';
+        //     document.getElementById('resume-button').style.display = 'none';
+        //     document.getElementById('letter-container').style.pointerEvents = 'auto'; // Enable letter container clicks
+        //     isPause = false;
+        // }
+
+
+        function sendScoreAndIncorrectsToServer(score, incorrects, letterCount) {
+        const url = '/update_score';
+        const data = {
+            score: score,
+            incorrects: incorrects,
+            letterCount: letterCount
+        };
+
+        fetch(url, {
+            method: 'POST',
+            headers: {
+            'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(result => {
+            // Handle the server response here
+        })
+        .catch(error => {
+            // Handle any errors
+        });
+        }
+
+
+        function endGame() {
+            // Perform end game actions here
+            // sendScoreAndIncorrectsToServer(score, incorrects, letterCount); 
+            window.location.href = "/end";
+        }
+
+        function home() {
+            // Redirect to the game page
+            window.location.href = "/";
+        }
+
+        // function displayLetter(letter) {
+        //     const letterContainer = document.getElementById('letter-container');
+        //     letterContainer.textContent = letter;
+        //     letterCount++;
+        // }
+
+        function getNextLetter() {
+            const letterContainer = document.getElementById('letter-container');
+            // const currentLetter = letterContainer.textContent.trim();
+            // const prevLetter = prevLetters[prevLetters.length - N - 1];
+
+
+            if (isFirstClick && startletter > 2) {
+                incorrects++; // Increment incorrects if no click before letter refresh
+                document.getElementById('incorrects').textContent = incorrects;
+            }
+
+            isFirstClick = true; // Set the flag to true for the next letter
+            startletter++;
+
+            fetch('/get_letter')
+                .then(response => response.json())
+                .then(data => {
+                letterContainer.textContent = data.letter;
+                letterCount++;
+                nback = data.nback
+                
+                document.getElementById('debug').textContent = nback
+                });
+                
+        }
+
+
+
+
+
+        // Initialize game
+        let prevLetters = [];
+        let letterCount = -2;
+
+
+        getNextLetter();
+        startTimer();
+        startGame();
+
+
+
+    </script>
+</body>
+</html>
